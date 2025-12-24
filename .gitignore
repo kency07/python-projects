@@ -3,4 +3,5 @@ __pycache__/
 *.tmp
 examples/before/*
 examples/after/*
+**/.DS_Store
 
