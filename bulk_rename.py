@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 def bulk_rename(folder_path, prefix="", suffix="", start_index=1, dry_run=False, extensions=None):
@@ -33,18 +34,31 @@ def bulk_rename(folder_path, prefix="", suffix="", start_index=1, dry_run=False,
                 print(f"Renamed: {file.name} -> {new_name}")
         except Exception as e:
             print(f"failed to rename {file.name}: {e}")
-    
+
+def parse_args ():
+    parser = argparse.ArgumentParser(description="Bulk File Rename")
+
+    parser.add_argument("--path", type=str, default=".", help="Target directory (Default: current directory)")
+    parser.add_argument("--prefix", type=str, default="", help="Prefix for new filename")
+    parser.add_argument("--suffix", type=str, default="", help="Suffix for new  filename")
+    parser.add_argument("--start", type=int, default=1, help="Starting number (default:1)")
+    parser.add_argument("--ext", nargs="*", type=str, default=None, help="File extensions to rename (e.g. jpg png)")
+    parser.add_argument("--dry-run", action="store_true", help="preview changes without renaming files")
+
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    path = input("Enter the folder path: ").strip()
-    prefix = input("Enter the prefix (optional): ").strip()
-    suffix = input("Enter the suffix (optional): ").strip()
-    start = input("Enter the starting number (default 1): ").strip()
-    dry = input("dry_run? (y/n): ").strip().lower()
-    dry_run = dry == "y"
-    start_index = int(start) if start.isdigit() else 1
-    ext_input= input("Enter extensions to rename(comma separated, leave empty for all): ").strip()
-    if ext_input:
-        extensions = {f".{e.strip().lower()}" for e in ext_input.split(",")}
-    else:
-        extensions = None
-    bulk_rename(path, prefix, suffix, start_index, dry_run, extensions)
+    args = parse_args()
+    
+    extensions = None
+    if args.ext:
+        extensions = {f".{e.lower().lstrip('.')}" for e in args.ext}
+
+    bulk_rename (folder_path = args.path,
+    prefix = args.prefix,
+    suffix = args.suffix,
+    start_index = args.start, 
+    dry_run = args.dry_run,
+    extensions= extensions)
+
