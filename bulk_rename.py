@@ -7,11 +7,14 @@ def bulk_rename(folder_path, prefix="", suffix="", start_index=1, dry_run=False,
     if not folder.exists() or  not folder.is_dir():
         print("Invalid folder path")
         return
+    script_name = Path(__file__).name
     files=[]
     for f in folder.iterdir():
         if not f.is_file():
             continue
         if f.name.startswith("."):
+            continue
+        if f.name == script_name:
             continue
         if extensions and f.suffix.lower() not in extensions:
             continue
@@ -19,21 +22,37 @@ def bulk_rename(folder_path, prefix="", suffix="", start_index=1, dry_run=False,
 
     files = sorted(files, key=lambda f:f.name.lower())
 
+    def get_safe_path(target_path):
+
+        counter = 1
+        safe_path = target_path
+
+        while safe_path.exists():
+            safe_path = target_path.with_stem(f"{target_path.stem}_{counter}")
+            counter += 1
+
+        return safe_path
+
     for index, file in enumerate( files, start=start_index):
         new_name = f"{prefix}{index}{suffix}{file.suffix}"
-        new_path = file.with_name(new_name) 
+        target_path = file.with_name(new_name)
+        safe_target = get_safe_path(target_path) 
 
+        if dry_run:
+            print(f"dry_run: {file.name} -> {safe_target.name}")
+            continue
         try:
-            if new_path.exists():
-                print(f"skipped (exists): {new_name}")
+            if  file.name == safe_target.name:
+                print(f"skip (already named): {file.name}")
                 continue
-            if dry_run:
-                print(f"dry_run: {file.name} -> {new_name}")
-            else:     
-                file.rename(new_path)
-                print(f"Renamed: {file.name} -> {new_name}")
-        except Exception as e:
-            print(f"failed to rename {file.name}: {e}")
+                 
+            file.rename(safe_target)
+            print(f"Renamed: {file.name} -> {safe_target.name}")
+
+        except PermissionError:
+            print(f"Permission denied: {file.name}")        
+        except OSError as e:
+            print(f"OS Error on {file.name}: {e}")
 
 def parse_args ():
     parser = argparse.ArgumentParser(description="Bulk File Rename")
@@ -62,3 +81,4 @@ if __name__ == "__main__":
     dry_run = args.dry_run,
     extensions= extensions)
 
+ 
