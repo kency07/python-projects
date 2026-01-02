@@ -22,7 +22,7 @@ It scrapes quotes, authors, tags, and the page heading from
 - `requests` – for sending HTTP requests
 - `BeautifulSoup` (bs4) – for parsing HTML
 - `pandas` – for storing data and exporting to CSV
-- `time.sleep()` - to delay requests  
+- `time.sleep()` - Add a delay helps ensure the server doesn't crash from too many requests 
 ---
 
 ## Website Scraped

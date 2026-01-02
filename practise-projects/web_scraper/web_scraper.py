@@ -5,7 +5,7 @@ import time
 
 # Web Scraper Project
 # Scrapes quotes, author names, tags, and heading from quotes.toscrape.com
-# Learned: requests, BeautifulSoup, pandas
+# Learned: requests, BeautifulSoup, pandas, pagination, handle request failures and timeouts
 
 
 base_url = "https://quotes.toscrape.com"
