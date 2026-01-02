@@ -18,3 +18,4 @@ env/
 # Project specific
 examples/before/*
 examples/after/*
+report.csv
