@@ -46,7 +46,7 @@ while current_page:
 if scraping_successful and master_list:
     df = pd.DataFrame(master_list)
 
-    # df.to_csv('report.csv', index=False, encoding="utf-8-sig")
+    df.to_csv('report.csv', index=False, encoding="utf-8-sig")
 
     print("Scraping complete! CSV saved as 'report.csv'.")
 else:
